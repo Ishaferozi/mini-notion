@@ -41,19 +41,20 @@ export function TopNavClient({ breadcrumbs, allPages, userEmail }: TopNavClientP
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-100 bg-white px-4 md:px-6 gap-4 z-10">
-      {/* ── Breadcrumb ── */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-neutral-500 min-w-0 flex-1">
+      {/* ── Breadcrumb — on mobile only show last item, padded for hamburger ── */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-neutral-500 min-w-0 flex-1 pl-10 md:pl-0">
         {breadcrumbs.map((item, idx) => {
           const isLast = idx === breadcrumbs.length - 1;
+          // On mobile only show the last breadcrumb item to save space
           return (
-            <span key={item.id} className="flex items-center gap-1 min-w-0">
+            <span key={item.id} className={["flex items-center gap-1 min-w-0", !isLast ? "hidden md:flex" : ""].join(" ")}>
               {idx > 0 && (
-                <svg className="h-3.5 w-3.5 shrink-0 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <svg className="h-3.5 w-3.5 shrink-0 text-neutral-300 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                 </svg>
               )}
               {isLast ? (
-                <span className="font-semibold text-neutral-800 truncate max-w-[200px]" aria-current="page">
+                <span className="font-semibold text-neutral-800 truncate max-w-[140px] md:max-w-[200px]" aria-current="page">
                   {item.title}
                 </span>
               ) : (

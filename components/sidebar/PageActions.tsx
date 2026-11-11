@@ -106,7 +106,8 @@ export function PageActions({
           "text-[var(--color-sidebar-text-muted)] hover:text-[var(--color-sidebar-text)]",
           "hover:bg-[var(--color-sidebar-active)]",
           "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]",
-          open ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+          // Always visible on touch devices, hover-only on desktop
+          open ? "opacity-100" : "opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100",
         ].join(" ")}
       >
         <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
