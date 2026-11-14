@@ -6,6 +6,8 @@ import { PageTreeItem } from "./PageTreeItem";
 interface PageActionsCallbacks {
   onRename: (id: string) => void;
   onAddSubpage: (parentId: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
   onArchive: (id: string) => void;
   onDelete: (id: string) => void;
 }

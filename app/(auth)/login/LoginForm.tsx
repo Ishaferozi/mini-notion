@@ -132,6 +132,14 @@ export function LoginForm() {
         placeholder="Enter your password"
         required
       />
+      <div className="flex justify-end -mt-1">
+        <a
+          href="/forgot-password"
+          className="text-xs text-[var(--color-accent)] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)] rounded"
+        >
+          Forgot password?
+        </a>
+      </div>
 
       {/* Generic error */}
       {errorState?.type === "generic" && (

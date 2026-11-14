@@ -9,6 +9,8 @@ import { PageActions } from "./PageActions";
 interface PageActionsCallbacks {
   onRename: (id: string) => void;
   onAddSubpage: (parentId: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
   onArchive: (id: string) => void;
   onDelete: (id: string) => void;
 }
@@ -150,6 +152,8 @@ export function PageTreeItem({
             pageId={node.id}
             onRename={actions.onRename}
             onAddSubpage={actions.onAddSubpage}
+            onMoveUp={actions.onMoveUp}
+            onMoveDown={actions.onMoveDown}
             onArchive={actions.onArchive}
             onDelete={actions.onDelete}
           />

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { SignupForm } from "./SignupForm";
 
@@ -18,7 +19,9 @@ export default function SignupPage() {
           </h1>
         </div>
         <div className="rounded-2xl border border-[var(--color-sidebar-border)] bg-white p-6 shadow-sm">
-          <SignupForm />
+          <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-neutral-100" />}>
+            <SignupForm />
+          </Suspense>
         </div>
         <p className="mt-5 text-center text-sm text-[var(--color-sidebar-text-muted)]">
           Already have an account?{" "}

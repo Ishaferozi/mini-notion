@@ -134,6 +134,46 @@ export function SidebarClient({ pages, allPages, userEmail }: SidebarClientProps
     [handleArchive]
   );
 
+  // ── Move page up/down (reorder among siblings) ─────────────────────────────
+  const handleMoveUp = useCallback(
+    async (id: string) => {
+      const page = allPages.find((p) => p.id === id);
+      if (!page) return;
+      const siblings = allPages
+        .filter((p) => p.parent_id === page.parent_id && !p.archived_at)
+        .sort((a, b) => a.position - b.position);
+      const idx = siblings.findIndex((p) => p.id === id);
+      if (idx <= 0) return;
+      const prev = siblings[idx - 1];
+      // Swap positions
+      await Promise.all([
+        fetch(`/api/pages/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ position: prev.position }) }),
+        fetch(`/api/pages/${prev.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ position: page.position }) }),
+      ]);
+      router.refresh();
+    },
+    [allPages, router]
+  );
+
+  const handleMoveDown = useCallback(
+    async (id: string) => {
+      const page = allPages.find((p) => p.id === id);
+      if (!page) return;
+      const siblings = allPages
+        .filter((p) => p.parent_id === page.parent_id && !p.archived_at)
+        .sort((a, b) => a.position - b.position);
+      const idx = siblings.findIndex((p) => p.id === id);
+      if (idx >= siblings.length - 1) return;
+      const next = siblings[idx + 1];
+      await Promise.all([
+        fetch(`/api/pages/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ position: next.position }) }),
+        fetch(`/api/pages/${next.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ position: page.position }) }),
+      ]);
+      router.refresh();
+    },
+    [allPages, router]
+  );
+
   return (
     <Sidebar
       pages={pages}
@@ -146,6 +186,8 @@ export function SidebarClient({ pages, allPages, userEmail }: SidebarClientProps
       pageActions={{
         onRename: handleRename,
         onAddSubpage: handleAddSubpage,
+        onMoveUp: handleMoveUp,
+        onMoveDown: handleMoveDown,
         onArchive: handleArchive,
         onDelete: handleDelete,
         onRestore: handleRestore,

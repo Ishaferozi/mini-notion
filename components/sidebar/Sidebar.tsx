@@ -11,6 +11,8 @@ import { ArchivedPages } from "./ArchivedPages";
 interface PageActionsCallbacks {
   onRename: (id: string) => void;
   onAddSubpage: (parentId: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
   onArchive: (id: string) => void;
   onDelete: (id: string) => void;
   onRestore: (id: string) => void;
@@ -209,6 +211,8 @@ export function Sidebar({
             actions={{
               onRename: pageActions.onRename,
               onAddSubpage: pageActions.onAddSubpage,
+              onMoveUp: pageActions.onMoveUp,
+              onMoveDown: pageActions.onMoveDown,
               onArchive: pageActions.onArchive,
               onDelete: pageActions.onDelete,
             }}

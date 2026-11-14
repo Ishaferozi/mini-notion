@@ -13,22 +13,15 @@ interface EditorProps {
   initialBlocks: Block[];
 }
 
-/**
- * The Tiptap editor component.
- *
- * Save strategy:
- *   - On every content change, a 800ms debounce fires a PUT to /api/blocks/[pageId]
- *   - If a save is in-flight when new changes arrive, the debounce resets the
- *     timer — the in-flight request completes independently (last-write-wins
- *     at the DB level, which is acceptable for a single-user workspace)
- *   - Save status: idle → saving → saved | error
- *   - "Saved" fades back to idle after 2 seconds
- */
 export function Editor({ pageId, initialBlocks }: EditorProps) {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Extract initial content from the first "document" block if one exists
+  // Track in-flight saves to prevent overlapping requests
+  const isSavingRef = useRef(false);
+  // Queue: if a save comes in while one is in-flight, hold the latest content
+  const pendingContentRef = useRef<TiptapContent | null>(null);
+
   const initialContent: TiptapContent | undefined = (() => {
     const docBlock = initialBlocks.find((b) => (b.type as string) === "document");
     if (docBlock && docBlock.content && typeof docBlock.content === "object") {
@@ -37,10 +30,17 @@ export function Editor({ pageId, initialBlocks }: EditorProps) {
     return undefined;
   })();
 
-  // ── Save function ────────────────────────────────────────────────────────────
   const saveContent = useCallback(
     async (content: TiptapContent) => {
+      // If already saving, queue the latest content and return
+      if (isSavingRef.current) {
+        pendingContentRef.current = content;
+        return;
+      }
+
+      isSavingRef.current = true;
       setSaveStatus("saving");
+
       try {
         const res = await fetch(`/api/blocks/${pageId}`, {
           method: "PUT",
@@ -49,25 +49,29 @@ export function Editor({ pageId, initialBlocks }: EditorProps) {
         });
 
         if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          console.error("Save failed:", body);
           setSaveStatus("error");
           return;
         }
 
         setSaveStatus("saved");
-        // Reset to idle after 2s so the indicator doesn't linger
         if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
         saveTimerRef.current = setTimeout(() => setSaveStatus("idle"), 2000);
-      } catch (err) {
-        console.error("Save error:", err);
+      } catch {
         setSaveStatus("error");
+      } finally {
+        isSavingRef.current = false;
+
+        // If content was queued while saving, flush it now
+        const queued = pendingContentRef.current;
+        if (queued) {
+          pendingContentRef.current = null;
+          saveContent(queued);
+        }
       }
     },
     [pageId]
   );
 
-  // ── Debounced save ───────────────────────────────────────────────────────────
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSave = useCallback(
     debounce((content: TiptapContent) => {
@@ -76,13 +80,9 @@ export function Editor({ pageId, initialBlocks }: EditorProps) {
     [saveContent]
   );
 
-  // ── Tiptap editor instance ───────────────────────────────────────────────────
   const editor = useEditor({
     extensions: buildExtensions(),
-    content: initialContent ?? {
-      type: "doc",
-      content: [{ type: "paragraph" }],
-    },
+    content: initialContent ?? { type: "doc", content: [{ type: "paragraph" }] },
     editorProps: {
       attributes: {
         class: "tiptap-editor focus:outline-none",
@@ -95,20 +95,17 @@ export function Editor({ pageId, initialBlocks }: EditorProps) {
       const json = editor.getJSON() as TiptapContent;
       debouncedSave(json);
     },
-    // Warn user if they try to leave with unsaved changes
     onBeforeCreate() {
       setSaveStatus("idle");
     },
   });
 
-  // Cleanup timer on unmount
   useEffect(() => {
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
   }, []);
 
-  // When pageId changes (navigating between pages), update editor content
   useEffect(() => {
     if (!editor) return;
     const docBlock = initialBlocks.find((b) => (b.type as string) === "document");
@@ -122,19 +119,18 @@ export function Editor({ pageId, initialBlocks }: EditorProps) {
       );
     }
     setSaveStatus("idle");
-  // Only re-run when pageId changes — not on every render
+    // Reset in-flight state on page change
+    isSavingRef.current = false;
+    pendingContentRef.current = null;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Toolbar + save status row */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <EditorToolbar editor={editor} />
         <SaveStatusIndicator status={saveStatus} />
       </div>
-
-      {/* Editor content area */}
       <EditorContent
         editor={editor}
         className="min-h-[60vh] cursor-text"

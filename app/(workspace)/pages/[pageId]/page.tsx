@@ -36,7 +36,7 @@ async function PageContent({ params }: { params: Promise<{ pageId: string }> }) 
 
   const { data: allPages } = await supabase
     .from("pages")
-    .select("id, parent_id, title, position, user_id, archived_at, cover, icon, created_at, updated_at")
+    .select("id, parent_id, title, position, user_id, archived_at, cover, icon, org_id, visibility, created_at, updated_at")
     .eq("user_id", user.id);
 
   const ancestors = getAncestors(pageId, allPages ?? []);
