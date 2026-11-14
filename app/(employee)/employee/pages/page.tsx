@@ -1,9 +1,9 @@
 import { Suspense } from "react";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { connection } from "next/server";
 import { requireMember } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { buildPageTree } from "@/lib/utils";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { TableSkeleton } from "@/components/ui/LoadingSkeleton";
 import { EmployeePagesClient } from "./EmployeePagesClient";
 import type { Page } from "@/lib/types";
@@ -28,9 +28,7 @@ async function WorkspaceContent() {
 
 export default function EmployeePagesPage() {
   return (
-    <>
-      <Suspense fallback={null}><PageHeader userRole="employee" breadcrumbs={[{ label: "Employee" }, { label: "My Workspace" }]} /></Suspense>
-      <div className="flex flex-col gap-6 p-6 md:p-8">
+    <>      <div className="flex flex-col gap-6 p-6 md:p-8">
         <div>
           <h1 className="text-xl font-bold text-neutral-900">My Workspace</h1>
           <p className="mt-0.5 text-sm text-neutral-500">

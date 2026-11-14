@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "./AppHeader";
 
@@ -7,11 +8,11 @@ interface PageHeaderProps {
 }
 
 /**
- * Server component that fetches the real user email and renders AppHeader.
- * Pages that already call connection() (via requireAdmin/requireMember) can
- * use this directly — it piggybacks on the same request context.
+ * Server component that reads the real user email and renders AppHeader.
+ * connection() marks this as dynamic so Next.js 16 doesn't try to prerender it.
  */
 export async function PageHeader({ userRole, breadcrumbs = [] }: PageHeaderProps) {
+  await connection();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const email = user?.email ?? "";

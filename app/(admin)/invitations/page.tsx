@@ -1,8 +1,8 @@
 import { Suspense } from "react";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { connection } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { InvitationsClient } from "./InvitationsClient";
 import { TableSkeleton } from "@/components/ui/LoadingSkeleton";
 
@@ -24,9 +24,7 @@ async function InvitationsContent() {
 
 export default function InvitationsPage() {
   return (
-    <>
-      <Suspense fallback={null}><PageHeader userRole="admin" breadcrumbs={[{ label: "Admin" }, { label: "Invitations" }]} /></Suspense>
-      <div className="flex flex-col gap-6 p-6 md:p-8">
+    <>      <div className="flex flex-col gap-6 p-6 md:p-8">
         <div>
           <h1 className="text-xl font-bold text-neutral-900">Invitations</h1>
           <p className="mt-0.5 text-sm text-neutral-500">

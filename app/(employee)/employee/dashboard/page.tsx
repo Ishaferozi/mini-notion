@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/server";
 import { DashboardCard } from "@/components/ui/DashboardCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { PriorityBadge } from "@/components/ui/PriorityBadge";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { TableSkeleton, CardSkeleton } from "@/components/ui/LoadingSkeleton";
 import { CheckSquare, TrendingUp, Clock, AlertCircle, CalendarClock, Layers } from "lucide-react";
@@ -76,8 +75,7 @@ async function DashboardContent() {
   const name = user.email?.split("@")[0] ?? "there";
 
   return (
-    <>
-      <AppHeader
+    <>      <AppHeader
         userEmail={user.email ?? ""}
         userRole="employee"
         breadcrumbs={[{ label: org?.name ?? "" }, { label: "My Dashboard" }]}

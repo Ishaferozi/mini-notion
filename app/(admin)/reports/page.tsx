@@ -1,9 +1,9 @@
 import { Suspense } from "react";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { connection } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { DashboardCard } from "@/components/ui/DashboardCard";
 import { TableSkeleton, CardSkeleton } from "@/components/ui/LoadingSkeleton";
 import { CheckSquare, AlertCircle, Clock, TrendingUp, Users, FolderOpen } from "lucide-react";
@@ -71,9 +71,7 @@ async function ReportsContent() {
   const completionRate = totalTasks ? Math.round(((completedTasks ?? 0) / totalTasks) * 100) : 0;
 
   return (
-    <>
-      <Suspense fallback={null}><PageHeader userRole="admin" breadcrumbs={[{ label: "Admin" }, { label: "Reports" }]} /></Suspense>
-      <div className="flex flex-col gap-8 p-6 md:p-8">
+    <>      <div className="flex flex-col gap-8 p-6 md:p-8">
         <div>
           <h1 className="text-xl font-bold text-neutral-900">Reports & Analytics</h1>
           <p className="mt-0.5 text-sm text-neutral-500">Real-time overview of your organization&apos;s performance.</p>

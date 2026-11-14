@@ -1,8 +1,8 @@
 import { Suspense } from "react";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { connection } from "next/server";
 import { requireMember } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { TableSkeleton } from "@/components/ui/LoadingSkeleton";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
@@ -59,9 +59,7 @@ async function DocumentsContent() {
 
 export default function EmployeeDocumentsPage() {
   return (
-    <>
-      <Suspense fallback={null}><PageHeader userRole="employee" breadcrumbs={[{ label: "Employee" }, { label: "Documents" }]} /></Suspense>
-      <div className="flex flex-col gap-6 p-6 md:p-8">
+    <>      <div className="flex flex-col gap-6 p-6 md:p-8">
         <div>
           <h1 className="text-xl font-bold text-neutral-900">Documents</h1>
           <p className="mt-0.5 text-sm text-neutral-500">

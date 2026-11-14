@@ -1,7 +1,7 @@
 import { Suspense } from "react";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { connection } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { Spinner } from "@/components/ui/Spinner";
 import { OrgSettingsClient } from "./OrgSettingsClient";
 
@@ -23,9 +23,7 @@ async function SettingsContent() {
 
 export default function SettingsPage() {
   return (
-    <>
-      <Suspense fallback={null}><PageHeader userRole="admin" breadcrumbs={[{ label: "Admin" }, { label: "Org Settings" }]} /></Suspense>
-      <div className="p-6 md:p-8">
+    <>      <div className="p-6 md:p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-neutral-900">Settings</h1>
         <p className="mt-1 text-sm text-neutral-500">

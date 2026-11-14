@@ -1,9 +1,9 @@
 import { Suspense } from "react";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { connection } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { MembersClient } from "./MembersClient";
 import { TableSkeleton } from "@/components/ui/LoadingSkeleton";
 
@@ -43,9 +43,7 @@ async function MembersContent() {
 
 export default function MembersPage() {
   return (
-    <>
-      <Suspense fallback={null}><PageHeader userRole="admin" breadcrumbs={[{ label: "Admin" }, { label: "Team Members" }]} /></Suspense>
-      <div className="flex flex-col gap-6 p-6 md:p-8">
+    <>      <div className="flex flex-col gap-6 p-6 md:p-8">
         <div>
           <h1 className="text-xl font-bold text-neutral-900">Team Members</h1>
           <p className="mt-0.5 text-sm text-neutral-500">

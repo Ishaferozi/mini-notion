@@ -1,9 +1,9 @@
 import { Suspense } from "react";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { connection } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { TableSkeleton } from "@/components/ui/LoadingSkeleton";
 import { Clock, Filter } from "lucide-react";
 import type { ActivityEntityType } from "@/lib/types";
@@ -115,9 +115,7 @@ async function ActivityContent() {
 
 export default function ActivityPage() {
   return (
-    <>
-      <Suspense fallback={null}><PageHeader userRole="admin" breadcrumbs={[{ label: "Admin" }, { label: "Activity Logs" }]} /></Suspense>
-      <div className="flex flex-col gap-6 p-6 md:p-8">
+    <>      <div className="flex flex-col gap-6 p-6 md:p-8">
         <div>
           <h1 className="text-xl font-bold text-neutral-900">Activity Logs</h1>
           <p className="mt-0.5 text-sm text-neutral-500">

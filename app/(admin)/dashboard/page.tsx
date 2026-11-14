@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/server";
 import { DashboardCard } from "@/components/ui/DashboardCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { PriorityBadge } from "@/components/ui/PriorityBadge";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { TableSkeleton } from "@/components/ui/LoadingSkeleton";
 import { Users, FolderOpen, CheckSquare, TrendingUp } from "lucide-react";
@@ -54,8 +53,7 @@ async function DashboardContent() {
   const completionRate = totalTasks ? Math.round(((completedTasks ?? 0) / totalTasks) * 100) : 0;
 
   return (
-    <>
-      <AppHeader
+    <>      <AppHeader
         userEmail={user.email ?? ""}
         userRole="admin"
         breadcrumbs={[{ label: org?.name ?? "Dashboard" }, { label: "Dashboard" }]}
